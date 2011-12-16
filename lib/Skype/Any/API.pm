@@ -30,21 +30,7 @@ sub new {
 sub init {
     my $self = shift;
 
-    for my $platform (qw/Windows Mac Linux/) {
-        my $class = "Skype::Any::API::$platform";
-        my $module = $class;
-        $module =~ s!::!/!g;
-        if (eval { require "$module.pm" }) {
-            my $_client = $class->new(
-                name     => $self->{name},
-                protocol => $self->{protocol},
-            );
-            $Client = $_client;
-        }
-    }
-    Carp::croak() unless $Client;
-
-    my $notify = sub {
+    my $handler = sub {
         my $notification = shift;
         my ($command, $id, $property, $value) = split /\s+/, $notification, 4;
 
@@ -148,7 +134,20 @@ sub init {
             }
         }
     };
-    $Client->notify($notify);
+
+    my %args = (
+        name     => $self->{name},
+        protocol => $self->{protocol},
+        handler  => $handler,
+    );
+    if ($^O eq 'MSWin32' && eval { require Skype::Any::API::Windows }) {
+        $Client = Skype::Any::API::Windows->new(%args);
+    } elsif ($^O eq 'darwin' && eval { require Skype::Any::API::Mac }) {
+        $Client = Skype::Any::API::Mac->new(%args);
+    } elsif ($^O eq 'linux' && eval { require Skype::Any::API::Linux }) {
+        $Client = Skype::Any::API::Linux->new(%args);
+    }
+    Carp::croak() unless $Client;
 
     $Client->attach;
 }
