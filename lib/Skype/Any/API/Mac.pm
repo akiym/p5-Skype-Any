@@ -2,29 +2,35 @@ package Skype::Any::API::Mac;
 use strict;
 use warnings;
 use Cocoa::Skype;
+use Cocoa::EventLoop;
 
 sub new {
     my ($class, %args) = @_;
 
     my $client = Cocoa::Skype->new(
-        name     => $args{name},
-        protocol => $args{protocol},
+        name => $args{name},
+        on_attach_response => sub {
+            my ($self, $code) = @_;
+            if ($code == 1) {
+                $self->send("PROTOCOL $args{protocol}");
+            }
+        },
+        on_notification_received => sub { shift; $args{handler}->(@_) },
     );
-    $client->attach;
 
     bless {
         client => $client,
     }, $class;
 }
 
-sub notify {
-    my ($self, $code) = @_;
-    $self->{client}->notify($code);
+sub attach {
+    my $self = shift;
+    $self->{client}->connect;
 }
 
-sub run          { shift->{client}->run }
+sub run          { Cocoa::EventLoop->run }
 sub disconnect   { shift->{client}->disconnect }
-sub is_running   { shift->{client}->is_running }
-sub send_command { shift->{client}->send_command(@_) }
+sub is_running   { shift->{client}->isRunning }
+sub send_command { shift->{client}->send(@_) }
 
 1;
