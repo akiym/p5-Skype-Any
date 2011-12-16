@@ -10,15 +10,11 @@ sub new {
         name     => $args{name},
         protocol => $args{protocol},
     );
+    $client->notify($args{handler});
 
     bless {
         client => $client,
     }, $class;
-}
-
-sub notify {
-    my ($self, $code) = @_;
-    $self->{client}->notify($code);
 }
 
 sub attach { shift->{client}->attach }

@@ -7,26 +7,19 @@ sub new {
     my ($class, %args) = @_;
 
     my $client = SkypeAPI->new;
-
-    my $protocol = $args{protocol} || 8;
+    $client->register_handler(sub { shift; $args{handler}->(@_) });
 
     bless {
         client   => $client,
-        protocol => $protocol,
+        protocol => $args{protocol},
     }, $class;
-}
-
-sub notify {
-    my ($self, $code) = @_;
-    $self->{client}->register_handler(sub { shift; $code->(@_) });
 }
 
 sub attach {
     my $self = shift;
     $self->{client}->attach;
 
-    my $command = $self->{client}->create_command({string => "PROTOCOL $self->{protocol}"});
-    $self->{client}->send_command($command);
+    $self->send_command("PROTOCOL $self->{protocol}");
 }
 
 sub run          { shift->{client}->listen }
