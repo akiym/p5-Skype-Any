@@ -6,6 +6,7 @@ use Carp ();
 use Skype::Any::User;
 use Skype::Any::Profile;
 use Skype::Any::Call;
+use Skype::Any::Message;
 use Skype::Any::Chat;
 use Skype::Any::ChatMember;
 use Skype::Any::ChatMessage;
@@ -67,6 +68,12 @@ sub init {
                 $call->handler(dtmf => $value);
             } elsif ($property eq 'SEEN') {
                 $call->handler(seen => $value);
+            }
+        } elsif ($command eq 'MESSAGE') {
+            my $message = Skype::Any::Message->new($id);
+            $message->handler(_ => $property, $value);
+            if ($property eq 'STATUS') {
+                $message->handler(status => $value);
             }
         } elsif ($command eq 'CHAT') {
             my $chat = Skype::Any::Chat->new($id);

@@ -7,6 +7,7 @@ use Skype::Any::Property;
 use Skype::Any::User;
 use Skype::Any::Profile;
 use Skype::Any::Call;
+use Skype::Any::Message;
 use Skype::Any::Chat;
 use Skype::Any::ChatMember;
 use Skype::Any::ChatMessage;
@@ -23,10 +24,11 @@ sub new {
     my %args = @_ == 1 ? %{$_[0]} : @_;
 
     my $name = $args{name} || __PACKAGE__ . '/' . $Skype::Any::VERSION;
+    my $protocol = $args{protocol} || 8;
 
     my $api = Skype::Any::API->new(
         name     => $name,
-        procotol => $args{protocol},
+        protocol => $protocol,
     );
 
     bless {}, $class;
@@ -38,7 +40,7 @@ sub _register_handler {
     $class->register_handler(%args);
 }
 
-for my $class (qw/User Profile Call Chat ChatMember ChatMessage VoiceMail SMS Application Group FileTransfer/) {
+for my $class (qw/User Profile Call Message Chat ChatMember ChatMessage VoiceMail SMS Application Group FileTransfer/) {
     my $meth = lc $class;
     no strict 'refs';
     *{__PACKAGE__ . '::' . $meth} = sub {
