@@ -160,6 +160,7 @@ sub init {
 }
 
 sub run          { $Client->run }
+sub disconnect   { $Client->disconnect }
 sub is_running   { $Client->is_running }
 sub send_command { shift; $Client->send_command(@_) }
 
