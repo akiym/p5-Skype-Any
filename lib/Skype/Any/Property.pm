@@ -7,7 +7,7 @@ use Skype::Any::API;
 sub new {
     my ($class, $id) = @_;
 
-    Carp::croak() unless defined $id;
+    Carp::croak('id is required.') unless defined $id;
 
     bless {
         id => $id,

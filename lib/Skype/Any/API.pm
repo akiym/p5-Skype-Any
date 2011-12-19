@@ -154,7 +154,7 @@ sub init {
     } elsif ($^O eq 'linux' && eval { require Skype::Any::API::Linux }) {
         $Client = Skype::Any::API::Linux->new(%args);
     }
-    Carp::croak() unless $Client;
+    Carp::croak('Client is not defined.') unless $Client;
 
     $Client->attach;
 }
