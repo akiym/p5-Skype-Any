@@ -1,6 +1,8 @@
 package Skype::Any::API::Linux;
 use strict;
 use warnings;
+use AnyEvent;
+use AnyEvent::DBus;
 use Net::DBus::Skype::API;
 
 sub new {
@@ -9,8 +11,8 @@ sub new {
     my $client = Net::DBus::Skype::API->new(
         name     => $args{name},
         protocol => $args{protocol},
+        notify   => $args{handler},
     );
-    $client->notify($args{handler});
 
     bless {
         client => $client,
@@ -19,7 +21,7 @@ sub new {
 
 sub attach { shift->{client}->attach }
 
-sub run          { shift->{client}->run }
+sub run          { AE::cv->recv }
 sub disconnect   { shift->{client}->disconnect }
 sub is_running   { shift->{client}->is_running }
 sub send_command { shift->{client}->send_command(@_) }
