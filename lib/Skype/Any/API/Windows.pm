@@ -7,7 +7,7 @@ sub new {
     my ($class, %args) = @_;
 
     my $client = SkypeAPI->new;
-    $client->register_handler(sub { shift; $args{handler}->(@_) });
+    $client->register_handler($args{handler});
 
     bless {
         client   => $client,

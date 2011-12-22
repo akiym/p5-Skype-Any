@@ -15,7 +15,7 @@ sub new {
                 $self->send("PROTOCOL $args{protocol}");
             }
         },
-        on_notification_received => sub { shift; $args{handler}->(@_) },
+        on_notification_received => $args{handler},
     );
 
     bless {

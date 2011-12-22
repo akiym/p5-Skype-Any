@@ -32,7 +32,7 @@ sub init {
     my $self = shift;
 
     my $handler = sub {
-        my $notification = shift;
+        my ($self, $notification) = @_;
         my ($command, $id, $property, $value) = split /\s+/, $notification, 4;
 
         Skype::Any::Property->handler(_ => $command, $id, $property, $value);
