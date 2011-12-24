@@ -34,23 +34,112 @@ sub new {
     bless {}, $class;
 }
 
-sub _register_handler {
-    my ($self, $class, %args) = @_;
-    $class = "Skype::Any::$class";
-    $class->register_handler(%args);
+sub user {
+    my $self = shift;
+    if (@_ == 1) {
+        Skype::Any::User->register_handler(_ => $_[0]);
+    } else {
+        Skype::Any::User->register_handler(@_);
+    }
 }
 
-for my $class (qw/User Profile Call Message Chat ChatMember ChatMessage VoiceMail SMS Application Group FileTransfer/) {
-    my $meth = lc $class;
-    no strict 'refs';
-    *{__PACKAGE__ . '::' . $meth} = sub {
-        my $self = shift;
-        if (@_ == 1) {
-            $self->_register_handler($class, _ => $_[0]);
-        } else {
-            $self->_register_handler($class, @_);
-        }
-    };
+sub profile {
+    my $self = shift;
+    if (@_ == 1) {
+        Skype::Any::Profile->register_handler(_ => $_[0]);
+    } else {
+        Skype::Any::Profile->register_handler(@_);
+    }
+}
+
+sub call {
+    my $self = shift;
+    if (@_ == 1) {
+        Skype::Any::Call->register_handler(_ => $_[0]);
+    } else {
+        Skype::Any::Call->register_handler(@_);
+    }
+}
+
+sub message {
+    my $self = shift;
+    if (@_ == 1) {
+        Skype::Any::Message->register_handler(_ => $_[0]);
+    } else {
+        Skype::Any::Message->register_handler(@_);
+    }
+}
+
+sub chat {
+    my $self = shift;
+    if (@_ == 1) {
+        Skype::Any::Chat->register_handler(_ => $_[0]);
+    } else {
+        Skype::Any::Chat->register_handler(@_);
+    }
+}
+
+sub chatmember {
+    my $self = shift;
+    if (@_ == 1) {
+        Skype::Any::ChatMember->register_handler(_ => $_[0]);
+    } else {
+        Skype::Any::ChatMember->register_handler(@_);
+    }
+}
+
+sub chatmessage {
+    my $self = shift;
+    if (@_ == 1) {
+        Skype::Any::ChatMessage->register_handler(_ => $_[0]);
+    } else {
+        Skype::Any::ChatMessage->register_handler(@_);
+    }
+}
+
+sub voicemail {
+    my $self = shift;
+    if (@_ == 1) {
+        Skype::Any::VoiceMail->register_handler(_ => $_[0]);
+    } else {
+        Skype::Any::VoiceMail->register_handler(@_);
+    }
+}
+
+sub sms {
+    my $self = shift;
+    if (@_ == 1) {
+        Skype::Any::SMS->register_handler(_ => $_[0]);
+    } else {
+        Skype::Any::SMS->register_handler(@_);
+    }
+}
+
+sub application {
+    my $self = shift;
+    if (@_ == 1) {
+        Skype::Any::Application->register_handler(_ => $_[0]);
+    } else {
+        Skype::Any::Application->register_handler(@_);
+    }
+}
+
+sub group {
+    my $self = shift;
+    if (@_ == 1) {
+        Skype::Any::Group->register_handler(_ => $_[0]);
+    } else {
+        Skype::Any::Group->register_handler(@_);
+    }
+}
+
+sub filetransfer {
+    my $self = shift;
+    if (@_ == 1) {
+        Skype::Any::FileTransfer->register_handler(_ => $_[0]);
+    } else {
+        Skype::Any::FileTransfer->register_handler(@_);
+    }
 }
 
 sub message_received {
@@ -61,12 +150,12 @@ sub message_received {
             return $code->($chatmessage, $status);
         }
     };
-    $self->_register_handler('ChatMessage', status => $wrapped_code);
+    Skype::Any::ChatMessage->register_handler(status => $wrapped_code);
 }
 
 sub notify {
     my ($self, $code) = @_;
-    $self->_register_handler('Property', _ => $code);
+    Skype::Any::Property->register_handler(_ => $code);
 }
 
 sub run          { Skype::Any::API->run }
