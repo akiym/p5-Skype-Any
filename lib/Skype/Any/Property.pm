@@ -50,7 +50,7 @@ sub _error {
     my ($self, $res) = @_;
     if ($res =~ /^ERROR/) {
         my ($obj, $code, $description) = split /\s+/, $res, 3;
-        Carp::croak($description);
+        Carp::carp($description);
     }
 }
 
