@@ -37,10 +37,15 @@ sub send_command {
 }
 
 sub property {
-    my ($self, $obj, $property) = @_;
+    my ($self, $obj, $property, $value) = @_;
     $property = uc $property;
 
-    my $res = $self->send_command("GET $obj $self->{id} $property");
+    my $res;
+    if (defined $value) {
+        $res = $self->send_command("SET $obj $self->{id} $property $value");
+    } else {
+        $res = $self->send_command("GET $obj $self->{id} $property");
+    }
     $self->_error($res);
 
     (split /\s+/, $res, 4)[3];
