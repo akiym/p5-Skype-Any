@@ -2,6 +2,7 @@ package Skype::Any::Profile;
 use strict;
 use warnings;
 use parent qw/Skype::Any::Property/;
+use Carp ();
 
 sub new {
     my $class = shift;
@@ -12,8 +13,17 @@ sub property {
     my ($self, $property, $value) = @_;
     $property = uc $property;
 
-    my $res = $self->send_command("GET PROFILE $property");
-    $self->_error($res);
+    my $res;
+    if (defined $value) {
+        $res = $self->send_command("SET PROFILE $property $value");
+    } else {
+        $res = $self->send_command("GET PROFILE $property");
+    }
+
+    if ($res =~ /^ERROR/) {
+        my ($obj, $code, $description) = split /\s+/, $res, 3;
+        Carp::carp($description);
+    }
 
     (split /\s+/, $res, 3)[2];
 }

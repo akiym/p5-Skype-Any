@@ -46,17 +46,13 @@ sub property {
     } else {
         $res = $self->send_command("GET $obj $self->{id} $property");
     }
-    $self->_error($res);
 
-    (split /\s+/, $res, 4)[3];
-}
-
-sub _error {
-    my ($self, $res) = @_;
     if ($res =~ /^ERROR/) {
         my ($obj, $code, $description) = split /\s+/, $res, 3;
         Carp::carp($description);
     }
+
+    (split /\s+/, $res, 4)[3];
 }
 
 sub AUTOLOAD {
