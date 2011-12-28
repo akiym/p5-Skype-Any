@@ -16,7 +16,7 @@ use Skype::Any::Application;
 use Skype::Any::Group;
 use Skype::Any::FileTransfer;
 
-my $Client;
+my $CLIENT;
 
 sub new {
     my $class = shift;
@@ -149,22 +149,22 @@ sub init {
     );
     if ($^O eq 'MSWin32') {
         require Skype::Any::API::Windows;
-        $Client = Skype::Any::API::Windows->new(%args);
+        $CLIENT = Skype::Any::API::Windows->new(%args);
     } elsif ($^O eq 'darwin') {
         require Skype::Any::API::Mac;
-        $Client = Skype::Any::API::Mac->new(%args);
+        $CLIENT = Skype::Any::API::Mac->new(%args);
     } elsif ($^O eq 'linux') {
         require Skype::Any::API::Linux;
-        $Client = Skype::Any::API::Linux->new(%args);
+        $CLIENT = Skype::Any::API::Linux->new(%args);
     }
-    Carp::croak('Your platform is not supported.') unless defined $Client;
+    Carp::croak('Your platform is not supported.') unless defined $CLIENT;
 
-    $Client->attach;
+    $CLIENT->attach;
 }
 
-sub run          { $Client->run }
-sub disconnect   { $Client->disconnect }
-sub is_running   { $Client->is_running }
-sub send_command { shift; $Client->send_command(@_) }
+sub run          { $CLIENT->run }
+sub disconnect   { $CLIENT->disconnect }
+sub is_running   { $CLIENT->is_running }
+sub send_command { shift; $CLIENT->send_command(@_) }
 
 1;
