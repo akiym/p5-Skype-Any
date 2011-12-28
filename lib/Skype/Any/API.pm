@@ -147,14 +147,17 @@ sub init {
         protocol => $self->{protocol},
         handler  => $handler,
     );
-    if ($^O eq 'MSWin32' && eval { require Skype::Any::API::Windows }) {
+    if ($^O eq 'MSWin32') {
+        require Skype::Any::API::Windows;
         $Client = Skype::Any::API::Windows->new(%args);
-    } elsif ($^O eq 'darwin' && eval { require Skype::Any::API::Mac }) {
+    } elsif ($^O eq 'darwin') {
+        require Skype::Any::API::Mac;
         $Client = Skype::Any::API::Mac->new(%args);
-    } elsif ($^O eq 'linux' && eval { require Skype::Any::API::Linux }) {
+    } elsif ($^O eq 'linux') {
+        require Skype::Any::API::Linux;
         $Client = Skype::Any::API::Linux->new(%args);
     }
-    Carp::croak('Client is not defined.') unless $Client;
+    Carp::croak('Your platform is not supported.') unless defined $Client;
 
     $Client->attach;
 }
