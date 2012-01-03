@@ -165,6 +165,10 @@ sub init {
 sub run          { $CLIENT->run }
 sub disconnect   { $CLIENT->disconnect }
 sub is_running   { $CLIENT->is_running }
-sub send_command { shift; $CLIENT->send_command(@_) }
+sub send_command {
+    my $self = shift;
+    my $command = @_ > 1 ? sprintf(shift, @_) : $_[0];
+    $CLIENT->send_command($command);
+}
 
 1;

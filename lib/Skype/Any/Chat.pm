@@ -4,10 +4,9 @@ use warnings;
 use parent qw/Skype::Any::Property/;
 
 sub send_message {
-    my ($self, $message) = @_;
-    $message = '' unless defined $message;
-
-    $self->send_command("CHATMESSAGE $self->{id} $message");
+    my $self = shift;
+    my $message = @_ > 1 ? sprintf(shift, @_) : $_[0];
+    $self->send_command('CHATMESSAGE %s %s', $self->{id}, $message);
 }
 
 sub property {

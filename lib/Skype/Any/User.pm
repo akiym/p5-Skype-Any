@@ -8,7 +8,7 @@ sub send_message {
     my ($self, $message) = @_;
 
     my $chatname = do {
-        my $res = $self->send_command("CHAT CREATE $self->{id}");
+        my $res = $self->send_command('CHAT CREATE %s', $self->{id});
         (split /\s+/, $res, 4)[1];
     };
     my $chat = Skype::Any::Chat->new($chatname);

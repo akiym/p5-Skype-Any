@@ -32,8 +32,8 @@ sub handler {
 }
 
 sub send_command {
-    my ($self, $command) = @_;
-    Skype::Any::API->send_command($command);
+    my $self = shift;
+    Skype::Any::API->send_command(@_);
 }
 
 sub property {
@@ -42,9 +42,9 @@ sub property {
 
     my $res;
     if (defined $value) {
-        $res = $self->send_command("SET $obj $self->{id} $property $value");
+        $res = $self->send_command('SET %s %s %s %s', $obj, $self->{id}, $property, $value);
     } else {
-        $res = $self->send_command("GET $obj $self->{id} $property");
+        $res = $self->send_command('GET %s %s %s', $obj, $self->{id}, $property);
     }
 
     if ($res =~ /^ERROR/) {

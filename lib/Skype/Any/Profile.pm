@@ -15,9 +15,9 @@ sub property {
 
     my $res;
     if (defined $value) {
-        $res = $self->send_command("SET PROFILE $property $value");
+        $res = $self->send_command('SET PROFILE %s %s', $property, $value);
     } else {
-        $res = $self->send_command("GET PROFILE $property");
+        $res = $self->send_command('GET PROFILE %s', $property);
     }
 
     if ($res =~ /^ERROR/) {
