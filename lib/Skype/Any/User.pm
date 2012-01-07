@@ -4,15 +4,18 @@ use warnings;
 use parent qw/Skype::Any::Property/;
 use Skype::Any::Chat;
 
-sub send_message {
-    my ($self, $message) = @_;
-
+sub chat {
+    my $self = shift;
     my $chatname = do {
         my $res = $self->send_command('CHAT CREATE %s', $self->{id});
         (split /\s+/, $res, 4)[1];
     };
-    my $chat = Skype::Any::Chat->new($chatname);
-    $chat->send_message($message);
+    Skype::Any::Chat->new($chatname);
+}
+
+sub send_message {
+    my ($self, $message) = @_;
+    $self->chat->send_message($message);
 }
 
 sub property {
