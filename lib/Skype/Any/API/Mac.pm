@@ -29,7 +29,6 @@ sub attach {
 }
 
 sub run          { Cocoa::EventLoop->run }
-sub disconnect   { shift->{client}->disconnect }
 sub is_running   { shift->{client}->isRunning }
 sub send_command { shift->{client}->send(@_) }
 

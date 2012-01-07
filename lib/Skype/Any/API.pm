@@ -163,7 +163,6 @@ sub init {
 }
 
 sub run          { $CLIENT->run }
-sub disconnect   { $CLIENT->disconnect }
 sub is_running   { $CLIENT->is_running }
 sub send_command {
     my $self = shift;

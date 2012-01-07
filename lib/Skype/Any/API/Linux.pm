@@ -22,7 +22,6 @@ sub new {
 sub attach { shift->{client}->attach }
 
 sub run          { AE::cv->recv }
-sub disconnect   { shift->{client}->disconnect }
 sub is_running   { shift->{client}->is_running }
 sub send_command { shift->{client}->send_command(@_) }
 

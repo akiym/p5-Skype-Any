@@ -159,7 +159,6 @@ sub notify {
 }
 
 sub run          { Skype::Any::API->run }
-sub disconnect   { Skype::Any::API->disconnect }
 sub is_running   { Skype::Any::API->is_running }
 sub send_command { shift; Skype::Any::API->send_command(@_) }
 
@@ -223,8 +222,6 @@ Create new instance of Skype::Any.
 =item $skype->message_received(sub { ... });
 
 =item $skype->run()
-
-=item $skype->disconnect();
 
 =item $skype->is_running();
 

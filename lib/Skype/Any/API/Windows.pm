@@ -23,7 +23,6 @@ sub attach {
 }
 
 sub run          { shift->{client}->listen }
-sub disconnect   { shift->{client}->stop_listen }
 sub is_running   { shift->{client}->is_available }
 sub send_command {
     my ($self, $string) = @_;
