@@ -3,6 +3,11 @@ use strict;
 use warnings;
 use parent qw/Skype::Any::Property/;
 
+sub alter {
+    my ($self, $property, $value) = @_;
+    $self->SUPER::alter('VOICEMAIL', $property, $value);
+}
+
 sub property {
     my ($self, $property, $value) = @_;
     $self->SUPER::property('VOICEMAIL', $property, $value);

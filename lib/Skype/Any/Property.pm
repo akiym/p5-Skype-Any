@@ -36,6 +36,28 @@ sub send_command {
     Skype::Any::API->send_command(@_);
 }
 
+sub alter {
+    my ($self, $obj, $property, $value) = @_;
+    $property = uc $property;
+
+    my $res;
+    if (defined $value) {
+        $res = $self->send_command('ALTER %s %s %s %s', $obj, $self->{id}, $property, $value);
+    } else {
+        warn sprintf 'ALTER %s %s %s', $obj, $self->{id}, $property;
+        $res = $self->send_command('ALTER %s %s %s', $obj, $self->{id}, $property);
+    }
+
+    if ($res =~ /^ERROR/) {
+        my ($obj, $code, $description) = split /\s+/, $res, 3;
+        Carp::carp($description);
+
+        return;
+    }
+
+    1;
+}
+
 sub property {
     my ($self, $obj, $property, $value) = @_;
     $property = uc $property;
