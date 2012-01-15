@@ -1,13 +1,14 @@
 package Skype::Any::API::Windows;
 use strict;
 use warnings;
+use Skype::Any::API;
 use SkypeAPI;
 
 sub new {
     my ($class, %args) = @_;
 
     my $client = SkypeAPI->new;
-    $client->register_handler($args{handler});
+    $client->register_handler(\&Skype::Any::API::handler);
 
     bless {
         client   => $client,

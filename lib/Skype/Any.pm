@@ -23,12 +23,10 @@ sub new {
     my $class = shift;
     my %args = @_ == 1 ? %{$_[0]} : @_;
 
-    my $name = $args{name} || __PACKAGE__ . '/' . $Skype::Any::VERSION;
-    my $protocol = $args{protocol} || 8;
-
-    my $api = Skype::Any::API->new(
-        name     => $name,
-        protocol => $protocol,
+    Skype::Any::API->new(
+        name     => __PACKAGE__ . '/' . $Skype::Any::VERSION,
+        protocol => 8,
+        %args,
     );
 
     bless {}, $class;

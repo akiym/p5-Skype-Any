@@ -1,6 +1,7 @@
 package Skype::Any::API::Linux;
 use strict;
 use warnings;
+use Skype::Any::API;
 use AnyEvent;
 use AnyEvent::DBus;
 use Net::DBus::Skype::API;
@@ -11,7 +12,7 @@ sub new {
     my $client = Net::DBus::Skype::API->new(
         name     => $args{name},
         protocol => $args{protocol},
-        notify   => $args{handler},
+        notify   => \&Skype::Any::API::handler,
     );
 
     bless {

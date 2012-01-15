@@ -1,6 +1,7 @@
 package Skype::Any::API::Mac;
 use strict;
 use warnings;
+use Skype::Any::API;
 use Cocoa::Skype;
 use Cocoa::EventLoop;
 
@@ -11,11 +12,11 @@ sub new {
         name => $args{name},
         on_attach_response => sub {
             my ($self, $code) = @_;
-            if ($code == 1) {
+            if ($code == 1) { # on success
                 $self->send("PROTOCOL $args{protocol}");
             }
         },
-        on_notification_received => $args{handler},
+        on_notification_received => \&Skype::Any::API::handler,
     );
 
     bless {
