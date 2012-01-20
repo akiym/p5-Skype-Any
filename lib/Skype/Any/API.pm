@@ -16,7 +16,7 @@ use Skype::Any::Application;
 use Skype::Any::Group;
 use Skype::Any::FileTransfer;
 
-my $CLIENT;
+our $CLIENT;
 
 sub new {
     my $class = shift;
