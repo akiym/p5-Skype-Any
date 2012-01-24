@@ -148,7 +148,7 @@ sub message_received {
             return $code->($chatmessage, $status);
         }
     };
-    Skype::Any::ChatMessage->register_handler(status => $wrapped_code);
+    $self->chatmessage(status => $wrapped_code);
 }
 
 sub notify {
