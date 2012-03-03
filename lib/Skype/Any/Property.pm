@@ -44,7 +44,6 @@ sub alter {
     if (defined $value) {
         $res = $self->send_command('ALTER %s %s %s %s', $obj, $self->{id}, $property, $value);
     } else {
-        warn sprintf 'ALTER %s %s %s', $obj, $self->{id}, $property;
         $res = $self->send_command('ALTER %s %s %s', $obj, $self->{id}, $property);
     }
 
