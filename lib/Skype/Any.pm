@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use 5.008001;
 use Skype::Any::API;
+use Skype::Any::Handler;
 use Skype::Any::Property;
 use Skype::Any::User;
 use Skype::Any::Profile;
@@ -162,6 +163,7 @@ sub send_command { shift; Skype::Any::API->send_command(@_) }
 
 sub DESTROY {
     undef $Skype::Any::API::CLIENT;
+    undef $Skype::Any::Handler::HANDLER;
 }
 
 1;

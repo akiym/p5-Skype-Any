@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Carp ();
 use Skype::Any::API;
+use Skype::Any::Handler;
 
 sub new {
     my ($class, $id) = @_;
@@ -15,18 +16,14 @@ sub new {
 }
 
 sub register_handler {
-    my ($class, %args) = @_;
-    no strict 'refs';
-    for my $prop (keys %args) {
-        push @{${"$class\::_handler"}->{$prop}}, $args{$prop};
-    }
+    my ($klass, %args) = @_;
+    Skype::Any::Handler->register($klass => \%args);
 }
 
 sub handler {
-    my ($self, $prop, @args) = @_;
-    no strict 'refs';
-    my $class = ref $self || $self;
-    for my $code (@{${"$class\::_handler"}->{$prop}}) {
+    my ($self, $property, @args) = @_;
+    my $klass = ref $self || $self;
+    for my $code (Skype::Any::Handler->handler($klass => $property)) {
         $code->($self, @args);
     }
 }
