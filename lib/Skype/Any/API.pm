@@ -18,6 +18,18 @@ use Skype::Any::FileTransfer;
 
 our $CLIENT;
 
+sub client {
+    my $self = shift;
+    if (@_) {
+        $CLIENT = shift;
+    } else {
+        unless (defined $CLIENT) {
+            Carp::croak('$CLIENT is not defined. You have to call Skype::Any::API->new().');
+        }
+        return $CLIENT;
+    }
+}
+
 sub new {
     my $class = shift;
     my %args = @_ == 1 ? %{$_[0]} : @_;
@@ -33,25 +45,29 @@ sub init {
 
     if ($^O eq 'MSWin32') {
         require Skype::Any::API::Windows;
-        $CLIENT = Skype::Any::API::Windows->new(
+        my $client = Skype::Any::API::Windows->new(
             protocol => $self->{protocol},
         );
+        $self->client($client);
     } elsif ($^O eq 'darwin') {
         require Skype::Any::API::Mac;
-        $CLIENT = Skype::Any::API::Mac->new(
+        my $client = Skype::Any::API::Mac->new(
             name     => $self->{name},
             protocol => $self->{protocol},
         );
+        $self->client($client);
     } elsif ($^O eq 'linux') {
         require Skype::Any::API::Linux;
-        $CLIENT = Skype::Any::API::Linux->new(
+        my $client = Skype::Any::API::Linux->new(
             name     => $self->{name},
             protocol => $self->{protocol},
         );
+        $self->client($client);
+    } else {
+        Carp::croak('Your platform is not supported.');
     }
-    Carp::croak('Your platform is not supported.') unless defined $CLIENT;
 
-    $CLIENT->attach;
+    $self->client->attach;
 }
 
 sub handler {
@@ -165,12 +181,12 @@ sub handler {
     }
 }
 
-sub run          { $CLIENT->run }
-sub is_running   { $CLIENT->is_running }
+sub run          { $_[0]->client->run }
+sub is_running   { $_[0]->client->is_running }
 sub send_command {
     my $self = shift;
     my $command = @_ > 1 ? sprintf(shift, @_) : $_[0];
-    $CLIENT->send_command($command);
+    $self->client->send_command($command);
 }
 
 1;

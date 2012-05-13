@@ -160,6 +160,10 @@ sub run          { Skype::Any::API->run }
 sub is_running   { Skype::Any::API->is_running }
 sub send_command { shift; Skype::Any::API->send_command(@_) }
 
+sub DESTROY {
+    undef $Skype::Any::API::CLIENT;
+}
+
 1;
 __END__
 
