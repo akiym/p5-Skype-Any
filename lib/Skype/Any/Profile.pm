@@ -2,30 +2,40 @@ package Skype::Any::Profile;
 use strict;
 use warnings;
 use parent qw/Skype::Any::Property/;
-use Carp ();
+use Skype::Any::Util qw/parse_response is_error/;
 
 sub new {
     my $class = shift;
     bless {}, $class;
 }
 
-sub property {
+sub _get_property {
+    my ($self, $property) = @_;
+    my $command = sprintf 'GET PROFILE %s', $property;
+    return $self->send_command($command);
+}
+
+sub _set_property {
     my ($self, $property, $value) = @_;
-    $property = uc $property;
+    my $command = sprintf 'SET PROFILE %s %s', $property, $value;
+    return $self->send_command($command);
+}
+
+sub property {
+    my $self = shift;
 
     my $res;
-    if (defined $value) {
-        $res = $self->send_command('SET PROFILE %s %s', $property, $value);
+    if (@_ <= 1) {
+        $res = $self->_get_property(@_);
     } else {
-        $res = $self->send_command('GET PROFILE %s', $property);
+        $res = $self->_set_property(@_);
     }
 
-    if ($res =~ /^ERROR/) {
-        my ($obj, $code, $description) = split /\s+/, $res, 3;
-        Carp::carp($description);
+    if (!is_error($res)) {
+        return (parse_response($res, 3))[2];
+    } else {
+        return;
     }
-
-    (split /\s+/, $res, 3)[2];
 }
 
 1;

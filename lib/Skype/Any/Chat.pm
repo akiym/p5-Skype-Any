@@ -6,7 +6,8 @@ use parent qw/Skype::Any::Property/;
 sub send_message {
     my $self = shift;
     my $message = @_ > 1 ? sprintf(shift, @_) : $_[0];
-    $self->send_command('CHATMESSAGE %s %s', $self->{id}, $message);
+    my $command = sprintf 'CHATMESSAGE %s %s', $self->id, $message;
+    $self->send_command($command);
 }
 
 sub alter {

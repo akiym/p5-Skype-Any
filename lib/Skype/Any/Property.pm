@@ -4,6 +4,7 @@ use warnings;
 use Carp ();
 use Skype::Any::API;
 use Skype::Any::Handler;
+use Skype::Any::Util qw/parse_response is_error/;
 
 sub new {
     my ($class, $id) = @_;
@@ -14,6 +15,8 @@ sub new {
         id => $id,
     }, $class;
 }
+
+sub id { $_[0]->{id} }
 
 sub register_handler {
     my ($klass, %args) = @_;
@@ -39,38 +42,41 @@ sub alter {
 
     my $res;
     if (defined $value) {
-        $res = $self->send_command('ALTER %s %s %s %s', $obj, $self->{id}, $property, $value);
+        $res = $self->send_command('ALTER %s %s %s %s', $obj, $self->id, $property, $value);
     } else {
-        $res = $self->send_command('ALTER %s %s %s', $obj, $self->{id}, $property);
+        $res = $self->send_command('ALTER %s %s %s', $obj, $self->id, $property);
     }
 
-    if ($res =~ /^ERROR/) {
-        my ($obj, $code, $description) = split /\s+/, $res, 3;
-        Carp::carp($description);
+    return !is_error($res) ? 1 : 0;
+}
 
-        return;
-    }
+sub _get_property {
+    my ($self, $obj, $property) = @_;
+    my $command = sprintf 'GET %s %s %s', $obj, $self->id, $property;
+    return $self->send_command($command);
+}
 
-    1;
+sub _set_property {
+    my ($self, $obj, $property, $value) = @_;
+    my $command = sprintf 'SET %s %s %s %s', $obj, $self->id, $property, $value;
+    return $self->send_command($command);
 }
 
 sub property {
-    my ($self, $obj, $property, $value) = @_;
-    $property = uc $property;
+    my $self = shift;
 
     my $res;
-    if (defined $value) {
-        $res = $self->send_command('SET %s %s %s %s', $obj, $self->{id}, $property, $value);
+    if (@_ <= 3) {
+        $res = $self->_get_property(@_);
     } else {
-        $res = $self->send_command('GET %s %s %s', $obj, $self->{id}, $property);
+        $res = $self->_set_property(@_);
     }
 
-    if ($res =~ /^ERROR/) {
-        my ($obj, $code, $description) = split /\s+/, $res, 3;
-        Carp::carp($description);
+    if (!is_error($res)) {
+        return (parse_response($res))[3];
+    } else {
+        return;
     }
-
-    (split /\s+/, $res, 4)[3];
 }
 
 sub AUTOLOAD {

@@ -3,12 +3,14 @@ use strict;
 use warnings;
 use parent qw/Skype::Any::Property/;
 use Skype::Any::Chat;
+use Skype::Any::Util qw/parse_response/;
 
 sub chat {
     my $self = shift;
     my $chatname = do {
-        my $res = $self->send_command('CHAT CREATE %s', $self->{id});
-        (split /\s+/, $res, 4)[1];
+        my $command = sprintf 'CHAT CREATE %s', $self->id;
+        my $res = $self->send_command($command);
+        (parse_response($res))[1];
     };
     Skype::Any::Chat->new($chatname);
 }

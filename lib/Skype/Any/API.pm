@@ -15,6 +15,7 @@ use Skype::Any::SMS;
 use Skype::Any::Application;
 use Skype::Any::Group;
 use Skype::Any::FileTransfer;
+use Skype::Any::Util qw/parse_response/;
 
 our $CLIENT;
 
@@ -72,10 +73,10 @@ sub init {
 
 sub handler {
     my ($self, $notification) = @_;
-    my ($command, $id, $property, $value) = split /\s+/, $notification, 4;
+    my ($obj, $id, $property, $value) = parse_response($notification);
 
-    Skype::Any::Property->handler(_ => $command, $id, $property, $value);
-    if ($command eq 'USER') {
+    Skype::Any::Property->handler(_ => $obj, $id, $property, $value);
+    if ($obj eq 'USER') {
         my $user = Skype::Any::User->new($id);
         $user->handler(_ => $property, $value);
         if ($property eq 'ONLINESTATUS') {
@@ -85,10 +86,10 @@ sub handler {
         } elsif ($property eq 'MOOD_TEXT' || $property eq 'RICH_MOOD_TEXT') {
             $user->handler(mood_text => $value);
         }
-    } elsif ($command eq 'PROFILE') {
+    } elsif ($obj eq 'PROFILE') {
         my $profile = Skype::Any::Profile->new();
         $profile->handler(_ => $property, $value);
-    } elsif ($command eq 'CALL') {
+    } elsif ($obj eq 'CALL') {
         my $call = Skype::Any::Call->new($id);
         $call->handler(_ => $property, $value);
         if ($property eq 'STATUS') {
@@ -108,13 +109,13 @@ sub handler {
         } elsif ($property eq 'SEEN') {
             $call->handler(seen => $value);
         }
-    } elsif ($command eq 'MESSAGE') {
+    } elsif ($obj eq 'MESSAGE') {
         my $message = Skype::Any::Message->new($id);
         $message->handler(_ => $property, $value);
         if ($property eq 'STATUS') {
             $message->handler(status => $value);
         }
-    } elsif ($command eq 'CHAT') {
+    } elsif ($obj eq 'CHAT') {
         my $chat = Skype::Any::Chat->new($id);
         $chat->handler(_ => $property, $value);
         if ($property eq 'MEMBERS') {
@@ -122,25 +123,25 @@ sub handler {
         } elsif ($property eq 'OPEND' || $property eq 'CLOSED') {
             $chat->handler(opend => $value);
         }
-    } elsif ($command eq 'CHATMEMBER') {
+    } elsif ($obj eq 'CHATMEMBER') {
         my $chatmember = Skype::Any::ChatMember->new($id);
         $chatmember->handler(_ => $property, $value);
         if ($property eq 'ROLE') {
             $chatmember->handler(role => $value);
         }
-    } elsif ($command eq 'CHATMESSAGE') {
+    } elsif ($obj eq 'CHATMESSAGE') {
         my $chatmessage = Skype::Any::ChatMessage->new($id);
         $chatmessage->handler(_ => $property, $value);
         if ($property eq 'STATUS') {
             $chatmessage->handler(status => $value);
         }
-    } elsif ($command eq 'VOICEMAIL') {
+    } elsif ($obj eq 'VOICEMAIL') {
         my $voicemail = Skype::Any::VoiceMail->new($id);
         $voicemail->handler(_ => $property, $value);
         if ($property eq 'STATUS') {
             $voicemail->handler(status => $value);
         }
-    } elsif ($command eq 'SMS') {
+    } elsif ($obj eq 'SMS') {
         my $sms = Skype::Any::SMS->new($id);
         $sms->handler(_ => $property, $value);
         if ($property eq 'STATUS') {
@@ -148,7 +149,7 @@ sub handler {
         } elsif ($property eq 'TARGET_STATUSES') {
             $sms->handler(target_statuses => $value);
         }
-    } elsif ($command eq 'APPLICATION') {
+    } elsif ($obj eq 'APPLICATION') {
         my $application = Skype::Any::Application->new($id);
         $application->handler(_ => $property, $value);
         if ($property eq 'CONNECTING') {
@@ -162,7 +163,7 @@ sub handler {
         } elsif ($property eq 'DATAGRAM') {
             $application->handler(datagram => $value);
         }
-    } elsif ($command eq 'GROUP') {
+    } elsif ($obj eq 'GROUP') {
         my $group = Skype::Any::Group->new($id);
         $group->handler(_ => $property, $value);
         if ($property eq 'NROFUSERS') {
@@ -172,7 +173,7 @@ sub handler {
         } elsif ($property eq 'EXPANDED') {
             $group->handler(expanded => $value);
         }
-    } elsif ($command eq 'FILETRANSFER') {
+    } elsif ($obj eq 'FILETRANSFER') {
         my $filetransfer = Skype::Any::FileTransfer->new($id);
         $filetransfer->handler(_ => $property, $value);
         if ($property eq 'STATUS') {
