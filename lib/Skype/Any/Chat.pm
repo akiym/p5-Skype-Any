@@ -10,11 +10,6 @@ sub send_message {
     $self->send_command($command);
 }
 
-sub alter {
-    my ($self, $property, $value) = @_;
-    $self->SUPER::alter('CHAT', $property, $value);
-}
-
 sub property {
     my ($self, $property, $value) = @_;
     $self->SUPER::property('CHAT', $property, $value);
