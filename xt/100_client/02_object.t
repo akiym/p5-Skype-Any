@@ -4,7 +4,7 @@ use Test::More;
 use Skype::Any;
 use Skype::Any::Handler;
 
-my @objects = qw/
+use_ok($_) for qw/
     Skype::Any::Application
     Skype::Any::Call
     Skype::Any::Chat
@@ -19,11 +19,12 @@ my @objects = qw/
     Skype::Any::VoiceMail
 /;
 
-use_ok($_) for @objects;
 
 {
     my $skype = Skype::Any->new;
     $skype->message_received(sub {});
+
+    ok defined $Skype::Any::Handler::HANDLER;
 }
 
 ok not defined $Skype::Any::Handler::HANDLER;
